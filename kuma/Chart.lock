@@ -1,6 +1,6 @@
 dependencies:
-- name: zone-proxy
-  repository: file://../charts/zone-proxy
+- name: mesh
+  repository: file://../charts/mesh
   version: 0.1.0
-digest: sha256:98060e87b37fb38a2b33231bb63a424bb8e6aad9f6f2f0c754082548933a58f1
-generated: "2026-02-05T14:37:30.639433+01:00"
+digest: sha256:3743d29ac89486a99c44b2cee38ff7ea8f54b37828ea1a3d63b8ec4bb1478226
+generated: "2026-02-16T14:13:55.684358+01:00"
