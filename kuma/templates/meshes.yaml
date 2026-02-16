@@ -1,0 +1,42 @@
+{{- range $mesh := .Values.meshes }}
+
+{{- /* Validate mutual exclusion: ingress/egress vs combinedProxies */ -}}
+{{- include "mesh.validateExclusive" $mesh -}}
+
+{{- /* --- Ingress --- */ -}}
+{{- if and $mesh.ingress $mesh.ingress.enabled }}
+{{- $roleCtx := dict "mesh" $mesh "meshName" $mesh.name "role" "ingress" "roleConfig" $mesh.ingress "Release" $.Release "Chart" $.Chart "Values" $.Values }}
+{{- include "mesh.serviceaccount" $roleCtx }}
+{{- include "mesh.deployment" $roleCtx }}
+{{- include "mesh.service" $roleCtx }}
+{{- include "mesh.hpa" $roleCtx }}
+{{- include "mesh.pdb" $roleCtx }}
+{{- end }}
+
+{{- /* --- Egress --- */ -}}
+{{- if and $mesh.egress $mesh.egress.enabled }}
+{{- $roleCtx := dict "mesh" $mesh "meshName" $mesh.name "role" "egress" "roleConfig" $mesh.egress "Release" $.Release "Chart" $.Chart "Values" $.Values }}
+{{- include "mesh.serviceaccount" $roleCtx }}
+{{- include "mesh.deployment" $roleCtx }}
+{{- include "mesh.service" $roleCtx }}
+{{- include "mesh.hpa" $roleCtx }}
+{{- include "mesh.pdb" $roleCtx }}
+{{- end }}
+
+{{- /* --- Combined Proxies --- */ -}}
+{{- if and $mesh.combinedProxies $mesh.combinedProxies.enabled }}
+{{- $roleCtx := dict "mesh" $mesh "meshName" $mesh.name "role" "all" "roleConfig" $mesh.combinedProxies "Release" $.Release "Chart" $.Chart "Values" $.Values }}
+{{- include "mesh.serviceaccount" $roleCtx }}
+{{- include "mesh.deployment" $roleCtx }}
+{{- include "mesh.service" $roleCtx }}
+{{- include "mesh.hpa" $roleCtx }}
+{{- include "mesh.pdb" $roleCtx }}
+{{- end }}
+
+{{- /* --- Mesh CR (unfederated zones) --- */ -}}
+{{- if $mesh.createMesh }}
+{{- $meshCtx := dict "mesh" $mesh "meshName" $mesh.name "Release" $.Release "Chart" $.Chart }}
+{{- include "mesh.meshResource" $meshCtx }}
+{{- end }}
+
+{{- end }}
