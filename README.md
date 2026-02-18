@@ -2,13 +2,13 @@
 
 ## What Changed Since the Original POC (Feb 9)
 
-The original POC demonstrated a single `zone-proxy` subchart with flat values (`mesh`, `role`, `podSpec`, `containers`). MADR 094 has since evolved significantly:
+The original POC demonstrated a single `zone-proxy` chart with flat values (`mesh`, `role`, `podSpec`, `containers`). MADR 094 has since evolved significantly:
 
 | Original POC | Current MADR 094 |
 |---|---|
 | Flat `zoneProxy` config | **`meshes` list** with per-mesh entries |
 | Single `role` field | Separate **`ingress`/`egress`/`combinedProxies`** per mesh |
-| `zone-proxy` subchart | **`mesh` library subchart** (manages full mesh lifecycle) |
+| `zone-proxy` chart | **`mesh` library chart** (manages full mesh lifecycle) |
 | No scaling support | **HPA** and **PDB** passthrough |
 | No ServiceAccount | **Per-role ServiceAccount** |
 | `containers` passthrough | **`resources`** as first-class field; `podSpec` for everything else |
@@ -18,14 +18,14 @@ The original POC demonstrated a single `zone-proxy` subchart with flat values (`
 
 The core innovation — raw K8s spec passthrough via `merge` — is preserved.
 
-## Architecture: Library Subchart + Parent Iteration
+## Architecture: Library Chart + Parent Iteration
 
-Helm can't natively render a subchart N times for N list items. This POC uses a **library chart** pattern:
+Helm can't natively render a chart N times for N list items. This POC uses a **library chart** pattern:
 
 ```
 poc-094-helm-zone-proxy/
 ├── charts/
-│   └── mesh/                        # Library subchart (type: library)
+│   └── mesh/                        # Library chart (type: library)
 │       ├── Chart.yaml
 │       └── templates/
 │           ├── _helpers.tpl         # Naming, labels, 63-char validation
